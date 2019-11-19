@@ -1,3 +1,4 @@
+from ValidaCpf import isCpfValid
 from Cliente import Cliente
 from random import randint
 clientes = []
@@ -48,13 +49,14 @@ while True:
         nome = str(input("Primeiro nome: "))
         sobrenome = str(input("Sobrenome: "))
         cpf = str(input("CPF: "))
+        while isCpfValid(cpf) == False:
+            cpf = str(input("CPF inválido. Digite novamente: "))
         email = str(input("Email: "))
         endereco = str(input("Endereço: "))
         telefone = str(input("Telefone: "))
         numeroconta = randint(10000, 99999)
         while verificaNumeroConta(numeroconta) == False:
             numeroconta = randint(10000, 99999)
-            verificaNumeroConta(numeroconta)
         c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000, 0)
         print("\nConta criada com sucesso!\nNúmero da conta: {}".format(numeroconta))
         numeroconta += 1
