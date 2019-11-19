@@ -40,17 +40,23 @@ def verificaNumeroConta(numeroconta):
             return False
     return True
 
+def cpfExists(cpf):
+    for cliente in clientes:
+        if cliente.cpf == cpf:
+            return True
+    return False
+
 
 while True:
     print()
     mostraMenu()
     opcao_menu = int(input("\nDigite uma opção => "))
     if opcao_menu == 1:
+        cpf = str(input("CPF: "))
+        while (isCpfValid(cpf) == False) or (cpfExists(cpf)):
+            cpf = str(input("CPF inválido ou já cadastrado. Digite novamente: "))
         nome = str(input("Primeiro nome: "))
         sobrenome = str(input("Sobrenome: "))
-        cpf = str(input("CPF: "))
-        while isCpfValid(cpf) == False:
-            cpf = str(input("CPF inválido. Digite novamente: "))
         email = str(input("Email: "))
         endereco = str(input("Endereço: "))
         telefone = str(input("Telefone: "))
@@ -64,15 +70,21 @@ while True:
 
     if opcao_menu == 2:
         cpf_consulta = str(input("Digite seu CPF: "))
+        while not(cpfExists(cpf_consulta)):
+            cpf_consulta = str(input("Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente: "))
         for cliente in clientes:
                 if cliente.cpf == cpf_consulta:
-                    dado = int(input("O que você deseja mudar na conta?\n1. Endereço\n2. Email\n3. Telefone:\n"))
-                    if dado == 1:
-                        cliente.endereco = str(input("Digite o novo endereço: "))
-                    elif dado == 2:
-                        cliente.email = str(input("Digite o novo email: "))
-                    elif dado == 3:
-                        cliente.telefone = str(input("Digite o novo telefone: "))
+                    dado = int(input("O que você deseja mudar na conta?\n1. Endereço\n2. Email\n3. Telefone:\n4. Voltar"))
+                    while dado not in [1,2,3,4]:
+                        dado = int(input("Opção inválida. Digite novamente:"))
+                        if dado == 1:
+                            cliente.endereco = str(input("Digite o novo endereço: "))
+                        elif dado == 2:
+                            cliente.email = str(input("Digite o novo email: "))
+                        elif dado == 3:
+                            cliente.telefone = str(input("Digite o novo telefone: "))
+                        elif dado == 4:
+                            break
     if opcao_menu == 3:
         cpf = str(input("Digite o CPF do cliente a ser deletado:\n"))
         deletarCliente(cpf)
