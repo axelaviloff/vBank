@@ -2,16 +2,22 @@ from ValidaCpf import isCpfValid
 from Cliente import Cliente
 from random import randint
 from time import sleep
+import os
+os.system('cls' if os.name == 'nt' else 'clear')
 clientes = []
+print("Iniciando sistema...")
+sleep(1)
+os.system('cls' if os.name == 'nt' else 'clear')
 print("""       ___              _   
  __ __| _ ) __ _  _ _  | |__
  \ V /| _ \/ _` || ' \ | / /
   \_/ |___/\__,_||_||_||_\_\ 
 """)
-print("-------------------------------")
+
 
 #Exibe o menu de opções do sistema
 def mostraMenu():
+    print("-------------------------------")
     print("""1. Inserir Cliente
 2. Alterar dados de um cliente
 3. Excluir cliente
@@ -21,11 +27,14 @@ def mostraMenu():
 
 #Mostra todas informações de todos os clientes
 def mostraClientes():
+    os.system('cls' if os.name == 'nt' else 'clear')
     print("Carregando lista de clientes...")
     sleep(2)
+    os.system('cls' if os.name == 'nt' else 'clear')
     if clientes == []:
         print("\nO Sistema não possuí nenhum cliente cadastrado!\n")
     else:
+        print("== CLIENTES ==")
         for cliente in clientes:
             print()
             print("Nome:", cliente.nome)
@@ -66,6 +75,11 @@ def obterNome(cpf):
             return cliente.nome, cliente.sobrenome
 
 #Deposita um valor no saldo de uma conta
+def creditarConta(numeroConta, valor):
+    for cliente in clientes:
+        if cliente.conta.numero_conta == numeroConta:
+            cliente.conta.creditar(valor)
+
 def debitarConta(numeroConta, valor):
     for cliente in clientes:
         if cliente.conta.numero_conta == numeroConta:
@@ -137,21 +151,23 @@ while True:
         mostraClientes()
     
     if opcao_menu == "5":
-        operacao = int(input("1. Débito\n2. Crédito\n3. Sair\n "))
+        operacao = int(input("1. Crédito\n2. Débito\n3. Sair\n "))
         while operacao not in [1,2,3]:
-            operacao = int(input("1. Débito\n2. Crédito\n3. Sair\n "))
+            operacao = int(input("1. Crédito\n2. Débito\n3. Sair\n "))
         if operacao == 3:
             continue   
         numero_conta = int(input("Digite o número da conta: "))
         while verificaNumeroConta(numero_conta):
             numero_conta = int(input("Número de conta inválido. Digite novamente: "))
         if operacao == 1:
-            valor = float(input("Digite o valor a ser debitado da conta {}, R$:".format(numero_conta)))
-            debitarConta(numero_conta, valor)
+            valor = float(input("Digite o valor a ser creditado da conta {}, R$:".format(numero_conta)))
+            creditarConta(numero_conta, valor)
         if operacao == 2:
-            break 
-
+            valor = float(input("Digite o valor a ser debitado da conta {}, R$".format(numero_conta)))
+            debitarConta(numero_conta, valor)
+    
     if opcao_menu == "6":
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("\nEncerrando sistema...")
         sleep(2)
         break

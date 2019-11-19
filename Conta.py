@@ -6,7 +6,11 @@ class Conta:
         self.saldo = saldo
     
     def debitar(self, valor):
-        self.saldo -= valor
+        if self.saldo + valor > 0:
+            self.saldo += valor
+        else:
+            print("Impossível debitar esse valor")
     
     def creditar(self, valor):
-        self.saldo += valor
+        if self.limite_credito + valor > 0:
+            self.limite_credito += valor
