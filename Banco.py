@@ -46,6 +46,10 @@ def cpfExists(cpf):
             return True
     return False
 
+def obterNome(cpf):
+    for cliente in clientes:
+        if cliente.cpf == cpf:
+            return cliente.nome, cliente.sobrenome
 
 while True:
     print()
@@ -87,7 +91,17 @@ while True:
                             break
     if opcao_menu == 3:
         cpf = str(input("Digite o CPF do cliente a ser deletado:\n"))
-        deletarCliente(cpf)
+        while not(cpfExists(cpf)):
+            cpf = str(input("Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente: "))
+        nome, sobrenome = obterNome(cpf)
+        confirmacao = int(input("Você confirma a remoção da conta de {} {} ?\n1. Sim\n2. Não\n".format(nome, sobrenome)))
+        while confirmacao not in [1,2]:
+            confirmacao = ("Você confirma a remoção da conta de {} ?\n1. Sim\n2. Não\n".format(obterNome(cpf)))
+        if confirmacao == 1:
+            deletarCliente(cpf)
+            print("Conta deletada com sucesso!")
+        else:
+            print("Conta não deletada.")
     
     if opcao_menu == 4:
         mostraClientes()
