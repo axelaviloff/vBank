@@ -3,9 +3,12 @@ from Cliente import Cliente
 from random import randint
 from time import sleep
 clientes = []
-print("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-print("          vBank")
-print("-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+print("""       ___              _   
+ __ __| _ ) __ _  _ _  | |__
+ \ V /| _ \/ _` || ' \ | / /
+  \_/ |___/\__,_||_||_||_\_\ 
+""")
+print("-------------------------------")
 
 #Exibe o menu de opções do sistema
 def mostraMenu():
@@ -152,6 +155,3 @@ while True:
         print("\nEncerrando sistema...")
         sleep(2)
         break
-        
-        
-        
