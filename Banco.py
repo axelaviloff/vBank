@@ -3,27 +3,35 @@ from Cliente import Cliente
 from random import randint
 from time import sleep
 import os
+
 os.system('cls' if os.name == 'nt' else 'clear')
 clientes = []
 print("Iniciando sistema...")
 sleep(1)
 os.system('cls' if os.name == 'nt' else 'clear')
-print("""       ___              _   
+cores = {"limpa":"\033[m",
+         "vermelho":"\033[31m",
+         "branco":"\033[30m",
+         "piscar":"\033[5m",
+         "fundobranco":"\033[7m",
+         "cinza":"\033[100m",
+         "verde":"\033[32m"
+}
+
+#Exibe o menu de opções do sistema
+def mostraMenu():
+    print("""       ___              _   
  __ __| _ ) __ _  _ _  | |__
  \ V /| _ \/ _` || ' \ | / /
   \_/ |___/\__,_||_||_||_\_\ 
 """)
-
-
-#Exibe o menu de opções do sistema
-def mostraMenu():
     print("-------------------------------")
-    print("""1. Inserir Cliente
-2. Alterar dados de um cliente
-3. Excluir cliente
-4. Listar Clientes
-5. Movimento da conta
-6. Sair""")
+    print("""[1] Inserir cliente
+[2] Alterar dados de um cliente
+[3] Excluir cliente
+[4] Listar clientes
+[5] Movimento da conta
+[6] Sair""")
 
 #Mostra todas informações de todos os clientes
 def mostraClientes():
@@ -32,21 +40,26 @@ def mostraClientes():
     sleep(2)
     os.system('cls' if os.name == 'nt' else 'clear')
     if clientes == []:
-        print("\nO Sistema não possuí nenhum cliente cadastrado!\n")
+        print("\n{}O Sistema não possuí nenhum cliente cadastrado!{}\n".format(cores["vermelho"], cores["limpa"]))
     else:
-        print("== CLIENTES ==")
+        print("{}=========== CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
         for cliente in clientes:
             print()
-            print("Nome:", cliente.nome)
-            print("Sobrenome:", cliente.sobrenome)
-            print("CPF:", cliente.cpf)
-            print("Email:", cliente.email)
-            print("Endereço:", cliente.endereco)
-            print("Telefone:", cliente.telefone)
-            print("Número da Conta Corrente:", cliente.conta.numero_conta)
-            print("Limite de crédito:", cliente.conta.limite_credito)
-            print("Saldo:", cliente.conta.saldo)
-            print()
+            print("{}NOME:{} {}".format(cores["verde"], cores["limpa"], cliente.nome))
+            print("{}SOBRENOME:{} {}".format(cores["verde"], cores["limpa"], cliente.sobrenome))
+            print("{}CPF:{} {}".format(cores["verde"], cores["limpa"], cliente.cpf))
+            print("{}EMAIL:{} {}".format(cores["verde"], cores["limpa"], cliente.email))
+            print("{}ENDEREÇO:{} {}".format(cores["verde"], cores["limpa"], cliente.endereco))
+            print("{}TELEFONE:{} {}".format(cores["verde"], cores["limpa"], cliente.telefone))
+            print("{}NÚMERO CONTA CORRENTE:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.numero_conta))
+            print("{}LIMITE DE CRÉDITO:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.limite_credito))
+            print("{}SALDO:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.saldo))
+            print("------------------------------")
+    x = input("[1] Voltar\n=> ")
+    while x != "1":
+        x = input("=> ")
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 #Deleta um cliente através do seu CPF
 def deletarCliente(cpf):
@@ -87,12 +100,13 @@ def debitarConta(numeroConta, valor):
 
 #Inicio do programa
 while True:
+    os.system('cls' if os.name == 'nt' else 'clear')
     mostraMenu()
     opcao_menu = input("=> ")
     if opcao_menu == "1":
         cpf = str(input("CPF: "))
         while (isCpfValid(cpf) == False) or (cpfExists(cpf)):
-            cpf = str(input("CPF inválido ou já cadastrado. Digite novamente: "))
+            cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
         nome = str(input("Primeiro nome: "))
         sobrenome = str(input("Sobrenome: "))
         email = str(input("Email: "))
@@ -102,19 +116,19 @@ while True:
         while verificaNumeroConta(numeroconta) == False:
             numeroconta = randint(10000, 99999)
         c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000, 0)
-        print("\nCadastrando cliente...")
+        print("\nCadastrando cliente...\n")
         sleep(2)
-        print("Cliente cadastrado com sucesso!\nNúmero da conta: {}\n".format(numeroconta))
+        print("Cliente cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(cores["fundobranco"],numeroconta, cores["limpa"]))
         sleep(2)
         clientes.append(c)
 
     if opcao_menu == "2":
         cpf_consulta = str(input("Digite seu CPF: "))
         while not(cpfExists(cpf_consulta)):
-            cpf_consulta = str(input("Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente: "))
+            cpf_consulta = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
         for cliente in clientes:
                 if cliente.cpf == cpf_consulta:
-                    dado = int(input("Que informação da conta você deseja alterar?\n1. Endereço\n2. Email\n3. Telefone\n4. Voltar\n"))
+                    dado = int(input("\nQue informação da conta você deseja alterar?\n1. Endereço\n2. Email\n3. Telefone\n4. Voltar\n"))
                     while dado not in [1,2,3,4]:
                         dado = int(input("Opção inválida. Digite novamente:\n"))
                     if dado == 1:
