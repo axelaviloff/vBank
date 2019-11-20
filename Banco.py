@@ -147,15 +147,17 @@ while True:
                         
     if opcao_menu == "3":
         cpf = str(input("Digite o CPF do cliente a ser deletado: "))
-        while not(cpfExists(cpf)):
-            cpf = str(input("Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente: "))
+        while (not(cpfExists(cpf)) and cpf != "1"):
+            cpf = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente(ou digite 1 para voltar)\n{} ".format(cores["vermelho"], cores["limpa"])))
+        if cpf == "1":
+            continue
         nome, sobrenome = obterNome(cpf)
         confirmacao = int(input("Você confirma a remoção da conta de {} {} ?\n1. Sim\n2. Não\n".format(nome, sobrenome)))
         while confirmacao not in [1,2]:
             confirmacao = ("Você confirma a remoção da conta de {} ?\n1. Sim\n2. Não\n".format(obterNome(cpf)))
         if confirmacao == 1:
             deletarCliente(cpf)
-            print("Deletando conta...")
+            print("Deletando conta...") 
             sleep(2)
             print("Conta deletada com sucesso!")
         else:
