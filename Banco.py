@@ -36,23 +36,39 @@ def mostraMenu():
 def cadastraCliente():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
+    print("Preencha os campos o digite 1 para voltar ao menu principal.")
     cpf = str(input("CPF: "))
+    if cpf == "1":
+        return
     while (isCpfValid(cpf) == False) or (cpfExiste(cpf)):
-        cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
+        cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
+        if cpf == "1":
+            return
     nome = str(input("Primeiro nome: "))
+    if nome == "1":
+        return
     sobrenome = str(input("Sobrenome: "))
+    if sobrenome == "1":
+        return
     email = str(input("Email: "))
+    if email == "1":
+        return
     endereco = str(input("Endereço: "))
+    if endereco == "1":
+        return
     telefone = str(input("Telefone: "))
+    if telefone == "1":
+        return
     numeroconta = randint(10000, 99999)
     while contaExiste(numeroconta):
         numeroconta = randint(10000, 99999)
     c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000, 0)
     print("\nCadastrando cliente...\n")
-    sleep(2)
+    sleep(1)
     print("Cliente cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(cores["fundobranco"],numeroconta, cores["limpa"]))
     sleep(2)
     clientes.append(c)
+
 
 #se opcao_menu == 2 percorre a list de clientes e muda o atributo desejado.
 def alteraCliente():
@@ -75,9 +91,9 @@ def alteraCliente():
             elif dado == 4:
                 break
             print("Alterando informações...")
-            sleep(2)
+            sleep(1)
             print("Alterações realizadas com sucesso!\n")
-            sleep(2)
+            sleep(1)
             break
 
 #se opcao_menu == 3 deleta um cliente através da função deletarCliente() que usa como parâmetro o cpf do cliente a ser deletado.       
@@ -94,7 +110,7 @@ def deletaCliente():
     if confirmacao == 1:
         deletarCliente(cpf)
         print("Deletando conta...") 
-        sleep(2)
+        sleep(1)
         print("Conta deletada com sucesso!")
     else:
         print("Conta não deletada.")
@@ -103,7 +119,7 @@ def deletaCliente():
 def mostraClientes():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Carregando lista de clientes...")
-    sleep(2)
+    sleep(1)
     os.system('cls' if os.name == 'nt' else 'clear')
     if clientes == []:
         print("\n{}O Sistema não possuí nenhum cliente cadastrado!{}\n".format(cores["vermelho"], cores["limpa"]))
@@ -125,6 +141,12 @@ def mostraClientes():
     while x != "1":
         x = input("=> ")
     os.system('cls' if os.name == 'nt' else 'clear')
+
+#se opcao_menu == 6
+def sair():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("Encerrando sistema...")
+    sleep(1)
 
 #Deleta um cliente através do seu CPF
 def deletarCliente(cpf):
@@ -169,6 +191,7 @@ clientes = []
 print("Iniciando sistema...")
 sleep(1)
 os.system('cls' if os.name == 'nt' else 'clear')
+
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     mostraMenu()
@@ -202,7 +225,5 @@ while True:
             debitarConta(numero_conta, valor)
     
     if opcao_menu == "6":
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print("Encerrando sistema...")
-        sleep(2)
+        sair()
         break
