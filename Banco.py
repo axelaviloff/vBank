@@ -1,14 +1,13 @@
+#Axel Igor Aviloff
+#Algoritmos e programação UFFS 19.1
+
 from ValidaCpf import isCpfValid
 from Cliente import Cliente
 from random import randint
 from time import sleep
-import os
+import os #Módulo importanto pra conseguir limpar a tela do terminal.
 
-os.system('cls' if os.name == 'nt' else 'clear')
-clientes = []
-print("Iniciando sistema...")
-sleep(1)
-os.system('cls' if os.name == 'nt' else 'clear')
+#Dicionário de cores que serão utilizadas para estilizar o terminal.
 cores = {"limpa":"\033[m",
          "vermelho":"\033[31m",
          "branco":"\033[30m",
@@ -18,7 +17,7 @@ cores = {"limpa":"\033[m",
          "verde":"\033[32m"
 }
 
-#Exibe o menu de opções do sistema
+#Exibe o menu de opções do sistema.
 def mostraMenu():
     print("""       ___              _   
  __ __| _ ) __ _  _ _  | |__
@@ -33,7 +32,74 @@ def mostraMenu():
 [5] Movimento da conta
 [6] Sair""")
 
-#Mostra todas informações de todos os clientes
+#se opcao_menu == 1 realiza o cadastro de clientes, onde cada instância de Cliente é armazenada em um list.
+def cadastraCliente():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
+    cpf = str(input("CPF: "))
+    while (isCpfValid(cpf) == False) or (cpfExiste(cpf)):
+        cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
+    nome = str(input("Primeiro nome: "))
+    sobrenome = str(input("Sobrenome: "))
+    email = str(input("Email: "))
+    endereco = str(input("Endereço: "))
+    telefone = str(input("Telefone: "))
+    numeroconta = randint(10000, 99999)
+    while contaExiste(numeroconta):
+        numeroconta = randint(10000, 99999)
+    c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000, 0)
+    print("\nCadastrando cliente...\n")
+    sleep(2)
+    print("Cliente cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(cores["fundobranco"],numeroconta, cores["limpa"]))
+    sleep(2)
+    clientes.append(c)
+
+#se opcao_menu == 2 percorre a list de clientes e muda o atributo desejado.
+def alteraCliente():
+    cpf_consulta = str(input("Digite CPF do cliente (ou digite 1 para voltar): "))
+    while not(cpfExiste(cpf_consulta)) and cpf_consulta != "1":
+        cpf_consulta = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
+    if cpf_consulta == "1":
+        return
+    for cliente in clientes:
+        if cliente.cpf == cpf_consulta:
+            dado = int(input("\nQue informação da conta você deseja alterar?\n[1] Endereço\n[2] Email\n[3] Telefone\n[4] Voltar\n"))
+            while dado not in [1,2,3,4]:
+                dado = int(input("Opção inválida. Digite novamente:\n"))
+            if dado == 1:
+                cliente.endereco = str(input("Digite o novo endereço: "))
+            elif dado == 2:
+                cliente.email = str(input("Digite o novo email: "))
+            elif dado == 3:
+                cliente.telefone = str(input("Digite o novo telefone: "))
+            elif dado == 4:
+                break
+            print("Alterando informações...")
+            sleep(2)
+            print("Alterações realizadas com sucesso!\n")
+            sleep(2)
+            break
+
+#se opcao_menu == 3 deleta um cliente através da função deletarCliente() que usa como parâmetro o cpf do cliente a ser deletado.       
+def deletaCliente():
+    cpf = str(input("Digite o CPF do cliente a ser deletado (ou digite 1 para voltar): "))
+    while (not(cpfExiste(cpf)) and cpf != "1"):
+        cpf = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
+    if cpf == "1":
+        return
+    nome, sobrenome = obterNome(cpf)    
+    confirmacao = int(input("Você confirma a remoção da conta de {} {} ?\n1. Sim\n2. Não\n".format(nome, sobrenome)))
+    while confirmacao not in [1,2]:
+        confirmacao = ("Você confirma a remoção da conta de {} ?\n1. Sim\n2. Não\n".format(obterNome(cpf)))
+    if confirmacao == 1:
+        deletarCliente(cpf)
+        print("Deletando conta...") 
+        sleep(2)
+        print("Conta deletada com sucesso!")
+    else:
+        print("Conta não deletada.")
+
+#se opcao_menu == 4 lista as informações dos clientes percorrendo a lista de clientes e mostrando seus atributos
 def mostraClientes():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Carregando lista de clientes...")
@@ -60,7 +126,6 @@ def mostraClientes():
         x = input("=> ")
     os.system('cls' if os.name == 'nt' else 'clear')
 
-
 #Deleta um cliente através do seu CPF
 def deletarCliente(cpf):
     for cliente in clientes:
@@ -68,14 +133,14 @@ def deletarCliente(cpf):
             clientes.remove(cliente)
 
 #Verifica se o número da conta já existe no sistema
-def verificaNumeroConta(numeroconta):
+def contaExiste(numeroconta):
     for cliente in clientes:
         if cliente.conta.numero_conta == numeroconta:
-            return False
-    return True
+            return True
+    return False
 
 #Verifica se o CPF já existe no sistema
-def cpfExists(cpf):
+def cpfExiste(cpf):
     for cliente in clientes:
         if cliente.cpf == cpf:
             return True
@@ -99,73 +164,23 @@ def debitarConta(numeroConta, valor):
             cliente.conta.debitar(valor)
 
 #Inicio do programa
+os.system('cls' if os.name == 'nt' else 'clear')
+clientes = []
+print("Iniciando sistema...")
+sleep(1)
+os.system('cls' if os.name == 'nt' else 'clear')
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     mostraMenu()
-    opcao_menu = input("=> ")
+    opcao_menu = input(" => ")
     if opcao_menu == "1":
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
-        cpf = str(input("CPF: "))
-        while (isCpfValid(cpf) == False) or (cpfExists(cpf)):
-            cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
-        nome = str(input("Primeiro nome: "))
-        sobrenome = str(input("Sobrenome: "))
-        email = str(input("Email: "))
-        endereco = str(input("Endereço: "))
-        telefone = str(input("Telefone: "))
-        numeroconta = randint(10000, 99999)
-        while verificaNumeroConta(numeroconta) == False:
-            numeroconta = randint(10000, 99999)
-        c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000, 0)
-        print("\nCadastrando cliente...\n")
-        sleep(2)
-        print("Cliente cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(cores["fundobranco"],numeroconta, cores["limpa"]))
-        sleep(2)
-        clientes.append(c)
+        cadastraCliente()
 
     if opcao_menu == "2":
-        cpf_consulta = str(input("Digite CPF do cliente (ou digite 1 para voltar): "))
-        while not(cpfExists(cpf_consulta)) and cpf_consulta != "1":
-            cpf_consulta = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
-        if cpf_consulta == "1":
-            continue
-        for cliente in clientes:
-                if cliente.cpf == cpf_consulta:
-                    dado = int(input("\nQue informação da conta você deseja alterar?\n[1] Endereço\n[2] Email\n[3] Telefone\n[4] Voltar\n"))
-                    while dado not in [1,2,3,4]:
-                        dado = int(input("Opção inválida. Digite novamente:\n"))
-                    if dado == 1:
-                        cliente.endereco = str(input("Digite o novo endereço: "))
-                    elif dado == 2:
-                        cliente.email = str(input("Digite o novo email: "))
-                    elif dado == 3:
-                        cliente.telefone = str(input("Digite o novo telefone: "))
-                    elif dado == 4:
-                        break
-                    print("Alterando informações...")
-                    sleep(2)
-                    print("Alterações realizadas com sucesso!\n")
-                    sleep(2)
-                    break
+        alteraCliente()
                         
     if opcao_menu == "3":
-        cpf = str(input("Digite o CPF do cliente a ser deletado (ou digite 1 para voltar): "))
-        while (not(cpfExists(cpf)) and cpf != "1"):
-            cpf = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
-        if cpf == "1":
-            continue
-        nome, sobrenome = obterNome(cpf)    
-        confirmacao = int(input("Você confirma a remoção da conta de {} {} ?\n1. Sim\n2. Não\n".format(nome, sobrenome)))
-        while confirmacao not in [1,2]:
-            confirmacao = ("Você confirma a remoção da conta de {} ?\n1. Sim\n2. Não\n".format(obterNome(cpf)))
-        if confirmacao == 1:
-            deletarCliente(cpf)
-            print("Deletando conta...") 
-            sleep(2)
-            print("Conta deletada com sucesso!")
-        else:
-            print("Conta não deletada.")
+        deletaCliente()
     
     if opcao_menu == "4":
         mostraClientes()
@@ -177,7 +192,7 @@ while True:
         if operacao == 3:
             continue   
         numero_conta = int(input("Digite o número da conta: "))
-        while verificaNumeroConta(numero_conta):
+        while not(contaExiste(numero_conta)):
             numero_conta = int(input("Número de conta inválido. Digite novamente: "))
         if operacao == 1:
             valor = float(input("Digite o valor a ser creditado da conta {}, R$:".format(numero_conta)))
@@ -188,6 +203,6 @@ while True:
     
     if opcao_menu == "6":
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("\nEncerrando sistema...")
+        print("Encerrando sistema...")
         sleep(2)
         break
