@@ -104,6 +104,8 @@ while True:
     mostraMenu()
     opcao_menu = input("=> ")
     if opcao_menu == "1":
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
         cpf = str(input("CPF: "))
         while (isCpfValid(cpf) == False) or (cpfExists(cpf)):
             cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
@@ -123,12 +125,14 @@ while True:
         clientes.append(c)
 
     if opcao_menu == "2":
-        cpf_consulta = str(input("Digite seu CPF: "))
-        while not(cpfExists(cpf_consulta)):
-            cpf_consulta = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente:{} ".format(cores["vermelho"], cores["limpa"])))
+        cpf_consulta = str(input("Digite CPF do cliente (ou digite 1 para voltar): "))
+        while not(cpfExists(cpf_consulta)) and cpf_consulta != "1":
+            cpf_consulta = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
+        if cpf_consulta == "1":
+            continue
         for cliente in clientes:
                 if cliente.cpf == cpf_consulta:
-                    dado = int(input("\nQue informação da conta você deseja alterar?\n1. Endereço\n2. Email\n3. Telefone\n4. Voltar\n"))
+                    dado = int(input("\nQue informação da conta você deseja alterar?\n[1] Endereço\n[2] Email\n[3] Telefone\n[4] Voltar\n"))
                     while dado not in [1,2,3,4]:
                         dado = int(input("Opção inválida. Digite novamente:\n"))
                     if dado == 1:
@@ -146,12 +150,12 @@ while True:
                     break
                         
     if opcao_menu == "3":
-        cpf = str(input("Digite o CPF do cliente a ser deletado: "))
+        cpf = str(input("Digite o CPF do cliente a ser deletado (ou digite 1 para voltar): "))
         while (not(cpfExists(cpf)) and cpf != "1"):
-            cpf = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente(ou digite 1 para voltar)\n{} ".format(cores["vermelho"], cores["limpa"])))
+            cpf = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
         if cpf == "1":
             continue
-        nome, sobrenome = obterNome(cpf)
+        nome, sobrenome = obterNome(cpf)    
         confirmacao = int(input("Você confirma a remoção da conta de {} {} ?\n1. Sim\n2. Não\n".format(nome, sobrenome)))
         while confirmacao not in [1,2]:
             confirmacao = ("Você confirma a remoção da conta de {} ?\n1. Sim\n2. Não\n".format(obterNome(cpf)))
