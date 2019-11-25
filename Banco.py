@@ -6,7 +6,7 @@ from ValidaEmail import isValidEmail
 from Cliente import Cliente
 from random import randint
 from time import sleep
-import os #Módulo importado para conseguir limpar a tela do terminal.
+import os #Módulo importado para conseguir usar comandos do próprio terminal
 
 #Dicionário de cores que serão utilizadas para estilizar o terminal.
 cores = {"limpa":"\033[m",
@@ -79,7 +79,7 @@ def cadastraCliente():
     while contaExiste(numeroconta):
         numeroconta = randint(10000, 99999)
     
-    c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000, 0)
+    c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000.0, 0.0)
     
     print("\nCadastrando cliente...\n")
     sleep(1)
@@ -154,7 +154,7 @@ def mostraClientes():
     if clientes == []:
         print("\n{}O Sistema não possuí nenhum cliente cadastrado!{}\n".format(cores["vermelho"], cores["limpa"]))
     else:
-        print("{}=========== LISTA DE CLIENTES ==========={}\n".format(cores["cinza"], cores["limpa"]))
+        print("{}=========== LISTA DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
         
         for cliente in clientes:
             print()
@@ -195,13 +195,14 @@ def movimentoConta():
     numero_conta = int(numero_conta)
     
     if operacao == "1":
-        valor = float(input("Digite o valor a ser creditado da conta {}, R$:".format(numero_conta)))
-        creditarConta(numero_conta, valor)
+        valor = input("Digite o valor a ser creditado na conta {}, R$:".format(numero_conta))
+        while creditarConta(numero_conta, valor) == False:
+            valor = input("R$")
     
     if operacao == "2":
         valor = input("Digite o valor a ser debitado da conta {}, R$".format(numero_conta))
         while debitarCliente(numero_conta, valor) == False:
-            valor = input(" ")
+            valor = input("R$")
 
 #se opcao_menu == 6 o programa finaliza.
 def sair():
@@ -241,10 +242,17 @@ def obterNome(cpf):
             return cliente.nome, cliente.sobrenome
 
 #Deposita um valor no saldo de uma conta.
-def creditarConta(numeroConta, valor):
+def creditarConta(numero_conta, valor):
+    try:
+        valor = float(valor)
+    except:
+        print("Valor inválido. Digite novamente")
+        return False 
+
     for cliente in clientes:
-        if cliente.conta.numero_conta == numeroConta:
-            cliente.conta.creditar(valor)
+        if cliente.conta.numero_conta == numero_conta:
+            x = cliente.conta.creditar(valor)
+            return x
 
 #Debita um valor na conta de um cliente.
 def debitarCliente(numero_conta, valor):
