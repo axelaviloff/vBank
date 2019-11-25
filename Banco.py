@@ -6,9 +6,9 @@ from ValidaEmail import isValidEmail
 from Cliente import Cliente
 from random import randint
 from time import sleep
-import os #Módulo importado para conseguir usar comandos do próprio terminal
+import os #Módulo importado para conseguir usar comandos do próprio terminal.
 
-#Dicionário de cores que serão utilizadas para estilizar o terminal.
+#Dicionário de cores que serão utilizadas para estilizar o sistema.
 cores = {"limpa":"\033[m",
          "vermelho":"\033[31m",
          "branco":"\033[30m",
@@ -18,11 +18,11 @@ cores = {"limpa":"\033[m",
          "verde":"\033[32m"
 }
 
-#Limpa tela do terminal
+#Limpa tela do terminal.
 def limpaTela():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-#Exibe o menu de opções do sistema.
+#Exibe o menu principal de opções do sistema.
 def mostraMenu():
     print("""       ___              _   
  __ __| _ ) __ _  _ _  | |__
@@ -37,7 +37,7 @@ def mostraMenu():
 [5] Movimento da conta
 [6] Sair""")
 
-#se opcao_menu == 1 realiza o cadastro de clientes, onde cada instância de Cliente é armazenada em um list.
+#se opcao_menu == 1 realiza o cadastro de clientes, onde cada instância de Cliente é armazenada em uma lista.
 def cadastraCliente():
     limpaTela()
     print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
@@ -52,10 +52,12 @@ def cadastraCliente():
             return
     
     nome = str(input("Primeiro nome: "))
+    nome = nome.capitalize()
     if nome == "1":
         return
 
     sobrenome = str(input("Sobrenome: "))
+    sobrenome = sobrenome.capitalize()
     if sobrenome == "1":
         return
     
@@ -89,7 +91,7 @@ def cadastraCliente():
     clientes.append(c)
 
 
-#se opcao_menu == 2 percorre a list de clientes e muda o atributo desejado.
+#se opcao_menu == 2 percorre a lista de clientes e muda o atributo desejado.
 def alteraCliente():
     limpaTela()
     print("{}=========== ALTERAÇÃO DE CLIENTES ==========={}\n".format(cores["cinza"], cores["limpa"]))
@@ -108,7 +110,12 @@ def alteraCliente():
             if dado == "1":
                 cliente.endereco = str(input("Digite o novo endereço: "))
             elif dado == "2":
-                cliente.email = str(input("Digite o novo email: "))
+                novoEmail = str(input("Digite o novo email: "))
+                while (not(isValidEmail(novoEmail))):
+                    novoEmail = str(input("{}Email inválido. Digite novamente (ou digite 1 para voltar):\n{}".format(cores["vermelho"], cores["limpa"])))
+                    if novoEmail == "1":
+                        return
+                cliente.email = novoEmail
             elif dado == "3":
                 cliente.telefone = str(input("Digite o novo telefone: "))
             elif dado == "4":
