@@ -7,6 +7,10 @@ def isCpfValid(cpf):
 
     cpf = re.sub("[^0-9]",'',cpf)
 
+    for i in range(1, 10):
+        if cpf == str(i)*11:
+            return False
+
     if len(cpf) != 11:
         return False
 

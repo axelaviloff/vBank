@@ -6,7 +6,8 @@ from ValidaEmail import isValidEmail
 from Cliente import Cliente
 from random import randint
 from time import sleep
-import pickle
+import re
+import pickle #Módulo para serialização e persistência
 import os #Módulo importado para conseguir usar comandos do próprio terminal.
 
 #Dicionário de cores que serão utilizadas para estilizar o sistema.
@@ -52,6 +53,8 @@ def carregaClientes():
     except FileNotFoundError:
         os.mknod("registro_clientes.pkl")
         return []
+    except EOFError:
+        return []
     
 #se opcao_menu == 1 realiza o cadastro de clientes, onde cada instância de Cliente é armazenada em uma lista.
 def cadastraCliente():
@@ -66,6 +69,7 @@ def cadastraCliente():
         cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente (ou digite 1 para voltar):\n{}".format(cores["vermelho"], cores["limpa"])))
         if cpf == "1":
             return
+    cpf = re.sub("[^0-9]",'',cpf)
     
     nome = str(input("Primeiro nome: "))
     nome = nome.capitalize()
@@ -105,6 +109,7 @@ def cadastraCliente():
     sleep(2)
     
     clientes.append(c)
+    salvaClientes(clientes)
 
 
 
@@ -162,6 +167,7 @@ def deletaCliente():
     if confirmacao == "1":
         deletarCliente(cpf)
         print("Deletando cliente do sistema...") 
+        salvaClientes(clientes)
         sleep(1)
         print("Cliente deletado com sucesso!")
         sleep(1)
@@ -291,7 +297,7 @@ def debitarCliente(numero_conta, valor):
             x = cliente.conta.debitar(valor)
             return x
             
-            
+
 #Inicio do programa
 limpaTela()
 clientes = carregaClientes()
@@ -321,5 +327,4 @@ while True:
     
     if opcao_menu == "6":
         sair()
-        salvaClientes(clientes)
         break
