@@ -8,7 +8,7 @@ class Cliente:
         self.email = email
         self.endereco = endereco
         self.telefone = telefone
-        
+    
 
 
 

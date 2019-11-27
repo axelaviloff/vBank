@@ -6,6 +6,7 @@ from ValidaEmail import isValidEmail
 from Cliente import Cliente
 from random import randint
 from time import sleep
+import pickle
 import os #Módulo importado para conseguir usar comandos do próprio terminal.
 
 #Dicionário de cores que serão utilizadas para estilizar o sistema.
@@ -35,8 +36,23 @@ def mostraMenu():
 [3] Excluir cliente
 [4] Listar clientes
 [5] Movimento da conta
-[6] Sair""")
+[6] Sair""")                
 
+#Salva a lista de clientes no "registro_clientes.pkl"
+def salvaClientes(obj):
+    with open('registro_clientes.pkl', 'wb') as output:
+        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
+
+#Se o arquivo pkl não existir ele cria e retorna [], se existir e estiver vazio retorna [], caso contrário retorna a lista de clientes
+def carregaClientes():
+    try:    
+        with open('registro_clientes.pkl', 'rb') as c:
+            clientes = pickle.load(c)
+            return clientes
+    except FileNotFoundError:
+        os.mknod("registro_clientes.pkl")
+        return []
+    
 #se opcao_menu == 1 realiza o cadastro de clientes, onde cada instância de Cliente é armazenada em uma lista.
 def cadastraCliente():
     limpaTela()
@@ -89,6 +105,7 @@ def cadastraCliente():
     sleep(2)
     
     clientes.append(c)
+
 
 
 #se opcao_menu == 2 percorre a lista de clientes e muda o atributo desejado.
@@ -274,11 +291,10 @@ def debitarCliente(numero_conta, valor):
             x = cliente.conta.debitar(valor)
             return x
             
-    
-
+            
 #Inicio do programa
 limpaTela()
-clientes = []
+clientes = carregaClientes()
 print("Iniciando sistema...")
 sleep(1)
 limpaTela()
@@ -298,10 +314,12 @@ while True:
     
     if opcao_menu == "4":
         mostraClientes()
+        
     
     if opcao_menu == "5":
         movimentoConta()
     
     if opcao_menu == "6":
         sair()
+        salvaClientes(clientes)
         break
