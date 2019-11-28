@@ -7,8 +7,8 @@ from Cliente import Cliente
 from random import randint
 from time import sleep
 import re
-import pickle #Módulo para serialização e persistência
-import os #Módulo importado para conseguir usar comandos do próprio terminal.
+import pickle  #Módulo para serialização e persistência
+import os  #Módulo importado para conseguir usar comandos do próprio terminal.
 
 #Dicionário de cores que serão utilizadas para estilizar o sistema.
 cores = {"limpa":"\033[m",
@@ -31,13 +31,14 @@ def mostraMenu():
  \ V /| _ \/ _` || ' \ | / /
   \_/ |___/\__,_||_||_||_\_\ 
 """)
-    print("-------------------------------")
+    print("--------------------------------")
     print("""[1] Inserir cliente
 [2] Alterar dados de um cliente
 [3] Excluir cliente
 [4] Listar clientes
 [5] Movimento da conta
-[6] Sair""")                
+[6] Sair""")
+    print("--------------------------------")                
 
 #Salva a lista de clientes no "registro_clientes.pkl"
 def salvaClientes(obj):
@@ -60,26 +61,35 @@ def carregaClientes():
 def cadastraCliente():
     limpaTela()
     print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
-    print("Preencha os campos ou digite 1 para voltar ao menu principal.\n")
+    print("Preencha todos os campos abaixo.")
+    print("Obs. para voltar digite 1 em qualquer campo\n")
     
     cpf = str(input("CPF: "))
     if cpf == "1":
         return
     while (isCpfValid(cpf) == False) or (cpfExiste(cpf)):
-        cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente (ou digite 1 para voltar):\n{}".format(cores["vermelho"], cores["limpa"])))
+        cpf = str(input("{}CPF inválido ou já cadastrado. Digite novamente:\n{}".format(cores["vermelho"], cores["limpa"])))
         if cpf == "1":
             return
     cpf = re.sub("[^0-9]",'',cpf)
     
     nome = str(input("Primeiro nome: "))
-    nome = nome.capitalize()
     if nome == "1":
         return
+    while not(nome.isalpha()):
+        nome = str(input("{}Digite um nome válido:\n{}".format(cores["vermelho"], cores["limpa"])))
+        if nome == "1":
+            return
+    nome = nome.capitalize()
 
     sobrenome = str(input("Sobrenome: "))
-    sobrenome = sobrenome.capitalize()
     if sobrenome == "1":
         return
+    while not(sobrenome.isalpha()):
+        sobrenome = str(input("{}Digite um sobrenome válido:\n{}".format(cores["vermelho"], cores["limpa"])))
+        if sobrenome == "1":
+            return
+    sobrenome = sobrenome.capitalize()
     
     email = str(input("Email: "))
     if email == "1":
@@ -93,9 +103,13 @@ def cadastraCliente():
     if endereco == "1":
         return
     
-    telefone = str(input("Telefone: "))
+    telefone = input("Telefone: ")
     if telefone == "1":
         return
+    while len(telefone) > 12 or telefone.isalpha():
+        telefone = input("{}Telefone inválido. Digite novamente:\n{}".format(cores["vermelho"], cores["limpa"]))
+        if telefone == "1":
+            return
     
     numeroconta = randint(10000, 99999)
     while contaExiste(numeroconta):
@@ -103,30 +117,47 @@ def cadastraCliente():
     
     c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000.0, 0.0)
     
-    print("\nCadastrando cliente...\n")
-    sleep(1)
-    print("Cliente cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(cores["fundobranco"],numeroconta, cores["limpa"]))
-    sleep(2)
-    
+    limpaTela()
+    print("Cadastrando cliente...\n")
+    sleep(1.5)
+    limpaTela()
+    print("Cliente {} {} cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(nome, sobrenome, cores["fundobranco"],numeroconta, cores["limpa"]))
     clientes.append(c)
     salvaClientes(clientes)
-
+    x = input("[1] Voltar\n=> ")
+    while x != "1":
+        x = input("=> ")
 
 
 #se opcao_menu == 2 percorre a lista de clientes e muda o atributo desejado.
 def alteraCliente():
     limpaTela()
-    print("{}=========== ALTERAÇÃO DE CLIENTES ==========={}\n".format(cores["cinza"], cores["limpa"]))
+    print("{}=========== ALTERAÇÃO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
     
     cpf_consulta = str(input("Digite CPF do cliente (ou digite 1 para voltar): "))
     while not(cpfExiste(cpf_consulta)) and cpf_consulta != "1":
         cpf_consulta = str(input("{}Esse CPF não está cadastrado no sistema ou é inválido. Digite novamente (ou digite 1 para voltar):\n{} ".format(cores["vermelho"], cores["limpa"])))
     if cpf_consulta == "1":
         return
-    
+    cpf_consulta = re.sub("[^0-9]",'',cpf_consulta)
+    limpaTela()
+    print("Carregando cliente...")
+    sleep(1)
+    limpaTela()
     for cliente in clientes:
         if cliente.cpf == cpf_consulta:
-            dado = input("\nQue informação da conta você deseja alterar?\n[1] Endereço\n[2] Email\n[3] Telefone\n[4] Voltar\n => ")
+            print("Cliente referente ao CPF digitado:\n")
+            print("{}NOME:{} {}".format(cores["verde"], cores["limpa"], cliente.nome))
+            print("{}SOBRENOME:{} {}".format(cores["verde"], cores["limpa"], cliente.sobrenome))
+            print("{}CPF:{} {}".format(cores["verde"], cores["limpa"], cliente.cpf))
+            print("{}EMAIL:{} {}".format(cores["verde"], cores["limpa"], cliente.email))
+            print("{}ENDEREÇO:{} {}".format(cores["verde"], cores["limpa"], cliente.endereco))
+            print("{}TELEFONE:{} {}".format(cores["verde"], cores["limpa"], cliente.telefone))
+            print("{}NÚMERO CONTA CORRENTE:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.numero_conta))
+            print("{}LIMITE DE CRÉDITO:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.limite_credito))
+            print("{}SALDO:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.saldo))
+            print("------------------------------")
+            dado = input("Que informação da conta você deseja alterar?\n[1] Endereço\n[2] Email\n[3] Telefone\n[4] Voltar\n => ")
             while dado not in ["1","2","3","4"]:
                 dado = input(" => ")
             if dado == "1":
@@ -139,10 +170,14 @@ def alteraCliente():
                         return
                 cliente.email = novoEmail
             elif dado == "3":
-                cliente.telefone = str(input("Digite o novo telefone: "))
+                novoTelefone = input("Digite o novo telefone: ")
+                while len(novoTelefone) > 12 or novoTelefone.isalpha():
+                    novoTelefone = input("{}Telefone inválido. Digite novamente:\n{}".format(cores["vermelho"], cores["limpa"]))
+                cliente.telefone = novoTelefone
             elif dado == "4":
                 return
             print("Alterando informações...")
+            salvaClientes(clientes)
             sleep(1)
             print("Alterações realizadas com sucesso!\n")
             sleep(1)
@@ -233,6 +268,8 @@ def movimentoConta():
         valor = input("Digite o valor a ser debitado da conta {}, R$".format(numero_conta))
         while debitarCliente(numero_conta, valor) == False:
             valor = input("R$")
+    
+    salvaClientes(clientes)
 
 #se opcao_menu == 6 o programa finaliza.
 def sair():
@@ -242,6 +279,7 @@ def sair():
 
 #Deleta um cliente através do seu CPF.
 def deletarCliente(cpf):
+    cpf = re.sub("[^0-9]",'',cpf)
     for cliente in clientes:
         if cliente.cpf == cpf:
             clientes.remove(cliente)
@@ -260,6 +298,7 @@ def contaExiste(numeroconta):
 
 #Verifica se o CPF já existe no sistema.
 def cpfExiste(cpf):
+    cpf = re.sub("[^0-9]",'',cpf)
     for cliente in clientes:
         if cliente.cpf == cpf:
             return True
@@ -267,6 +306,7 @@ def cpfExiste(cpf):
 
 #Obtem nome do proprietário da conta através do seu CPF.
 def obterNome(cpf):
+    cpf = re.sub("[^0-9]",'',cpf)
     for cliente in clientes:
         if cliente.cpf == cpf:
             return cliente.nome, cliente.sobrenome

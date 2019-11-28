@@ -9,7 +9,10 @@ class Conta:
     def debitar(self, valor): 
         saldoAnterior = self.saldo
         limiteAnterior = self.limite_credito
-        
+        if valor < 0:
+            print("Valor deve ser positivo. Digite o valor novamente")
+            sleep(1)
+            return False
         if (self.saldo + self.limite_credito) - valor >= 0:
             if valor >= self.saldo:
                 valor = valor - self.saldo
