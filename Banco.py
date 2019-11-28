@@ -119,8 +119,9 @@ def cadastraCliente():
     
     limpaTela()
     print("Cadastrando cliente...\n")
-    sleep(1.5)
+    sleep(1)
     limpaTela()
+    print("{}=========== CADASTRO DE CLIENTES ==========={}\n".format(cores["cinza"], cores["limpa"]))
     print("Cliente {} {} cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(nome, sobrenome, cores["fundobranco"],numeroconta, cores["limpa"]))
     clientes.append(c)
     salvaClientes(clientes)
