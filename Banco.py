@@ -8,7 +8,7 @@ from random import randint
 from time import sleep
 import re
 import pickle  #Módulo para serialização e persistência
-import os  #Módulo importado para conseguir usar comandos do próprio terminal.
+import os  #Módulo para conseguir usar comandos do próprio terminal.
 
 #Dicionário de cores que serão utilizadas para estilizar o sistema.
 cores = {"limpa":"\033[m",
@@ -38,8 +38,8 @@ def mostraMenu():
 [4] Listar clientes
 [5] Movimento da conta
 [6] Sair""")
-    print("--------------------------------")                
-
+    print("--------------------------------")
+    
 #Salva a lista de clientes no "registro_clientes.pkl"
 def salvaClientes(obj):
     with open('registro_clientes.pkl', 'wb') as output:
@@ -52,7 +52,7 @@ def carregaClientes():
             clientes = pickle.load(c)
             return clientes
     except FileNotFoundError:
-        os.mknod("registro_clientes.pkl")
+        open('registro_clientes.pkl', 'w')
         return []
     except EOFError:
         return []
@@ -60,6 +60,7 @@ def carregaClientes():
 #se opcao_menu == 1 realiza o cadastro de clientes, onde cada instância de Cliente é armazenada em uma lista.
 def cadastraCliente():
     limpaTela()
+    
     print("{}=========== CADASTRO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
     print("Preencha todos os campos abaixo.")
     print("Obs. para voltar digite 1 em qualquer campo\n")
@@ -118,13 +119,18 @@ def cadastraCliente():
     c = Cliente(nome, sobrenome, cpf, email, endereco, telefone, numeroconta, 1000.0, 0.0)
     
     limpaTela()
+    
     print("Cadastrando cliente...\n")
+    
     sleep(1)
     limpaTela()
+    
     print("{}=========== CADASTRO DE CLIENTES ==========={}\n".format(cores["cinza"], cores["limpa"]))
     print("Cliente {} {} cadastrado com sucesso!\nNúmero da conta: {}{}{}\n".format(nome, sobrenome, cores["fundobranco"],numeroconta, cores["limpa"]))
+    
     clientes.append(c)
     salvaClientes(clientes)
+    
     x = input("[1] Voltar\n=> ")
     while x != "1":
         x = input("=> ")
@@ -133,6 +139,7 @@ def cadastraCliente():
 #se opcao_menu == 2 percorre a lista de clientes e muda o atributo desejado.
 def alteraCliente():
     limpaTela()
+    
     print("{}=========== ALTERAÇÃO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
     
     cpf_consulta = str(input("Digite CPF do cliente (ou digite 1 para voltar): "))
@@ -141,7 +148,9 @@ def alteraCliente():
     if cpf_consulta == "1":
         return
     cpf_consulta = re.sub("[^0-9]",'',cpf_consulta)
+    
     limpaTela()
+    
     print("Carregando cliente...")
     sleep(1)
     limpaTela()
@@ -158,9 +167,12 @@ def alteraCliente():
             print("{}LIMITE DE CRÉDITO:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.limite_credito))
             print("{}SALDO:{} {}".format(cores["verde"], cores["limpa"], cliente.conta.saldo))
             print("------------------------------")
+            
             dado = input("Que informação da conta você deseja alterar?\n[1] Endereço\n[2] Email\n[3] Telefone\n[4] Voltar\n => ")
+            
             while dado not in ["1","2","3","4"]:
                 dado = input(" => ")
+            
             if dado == "1":
                 cliente.endereco = str(input("Digite o novo endereço: "))
             elif dado == "2":
@@ -177,17 +189,22 @@ def alteraCliente():
                 cliente.telefone = novoTelefone
             elif dado == "4":
                 return
+            
             print("Alterando informações...")
+            
             salvaClientes(clientes)
             sleep(1)
+            
             print("Alterações realizadas com sucesso!\n")
+            
             sleep(1)
             break
 
 #se opcao_menu == 3 deleta um cliente através da função deletarCliente() que usa como parâmetro o cpf do cliente a ser deletado.       
 def deletaCliente():
     limpaTela()
-    print("{}=========== REMOÇÃO DE CLIENTES ==========={}\n".format(cores["cinza"], cores["limpa"]))
+    
+    print("{}=========== REMOÇÃO DE CLIENTES ==========={}".format(cores["cinza"], cores["limpa"]))
     
     cpf = str(input("Digite o CPF do cliente a ser deletado (ou digite 1 para voltar): "))
     while (not(cpfExiste(cpf)) and cpf != "1"):
@@ -196,6 +213,7 @@ def deletaCliente():
         return
     
     nome, sobrenome = obterNome(cpf)    
+    
     confirmacao = input("Você confirma a remoção do cliente {} {} ?\n[1] Sim\n[2] Não\n => ".format(nome, sobrenome))
     while confirmacao not in ["1","2"]:
         confirmacao = input(" => ".format(obterNome(cpf)))
@@ -213,7 +231,9 @@ def deletaCliente():
 #se opcao_menu == 4 lista as informações dos clientes percorrendo a lista de clientes e mostrando seus atributos.
 def mostraClientes():
     limpaTela()
+    
     print("Carregando lista de clientes...")
+    
     sleep(1)
     limpaTela()
     
@@ -242,6 +262,7 @@ def mostraClientes():
 #se opcao_menu == 5 o programa realiza operações de crédito e débito na conta.
 def movimentoConta():
     limpaTela()
+    
     print("{}=========== MOVIMENTO DA CONTA ==========={}\n".format(cores["cinza"], cores["limpa"]))
     
     operacao = str(input("[1] Crédito\n[2] Débito\n[3] Voltar\n => "))
@@ -254,7 +275,6 @@ def movimentoConta():
     numero_conta = input("Digite o número da conta (ou digite 1 para voltar): ")
     while (not contaExiste(numero_conta)) and numero_conta != "1":
         numero_conta = input("{}Número de conta não existe ou é inválido. Digite novamente (ou digite 1 para voltar):{}\n".format(cores["vermelho"], cores["limpa"]))
-    
     if numero_conta == "1":
         return
     
@@ -275,7 +295,9 @@ def movimentoConta():
 #se opcao_menu == 6 o programa finaliza.
 def sair():
     limpaTela()
+    
     print("Encerrando sistema...")
+    
     sleep(1)
 
 #Deleta um cliente através do seu CPF.
@@ -360,8 +382,7 @@ while True:
         deletaCliente()
     
     if opcao_menu == "4":
-        mostraClientes()
-        
+        mostraClientes()       
     
     if opcao_menu == "5":
         movimentoConta()
