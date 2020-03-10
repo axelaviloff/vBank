@@ -4,7 +4,7 @@
 Python bank implementation using only console
 
 ### Main functions:
-* Register clientes (using serialization and persistence)
+* Register clients (using serialization and persistence)
 * Clients information change
 * Clients remove
 * Clients listing
